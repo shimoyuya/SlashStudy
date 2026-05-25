@@ -44,6 +44,8 @@ void ASlashCharacter::BeginPlay()
 			}
 		}
 	}
+
+	Tags.Add(FName("SlashCharacter"));
 }
 
 void ASlashCharacter::Tick(float DeltaTime)
@@ -76,14 +78,6 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 		{
 			EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ASlashCharacter::Attack);
 		}
-	}
-}
-
-void ASlashCharacter::SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled)
-{
-	if (EquippedWeapon && EquippedWeapon->GetWeaponBox())
-	{
-		EquippedWeapon->GetWeaponBox()->SetCollisionEnabled(CollisionEnabled);
 	}
 }
 
@@ -125,7 +119,7 @@ void ASlashCharacter::EKeyPressed()
 	AWeapon* OverlapingWeapon = Cast<AWeapon>(OverlapingItem);
 	if (OverlapingWeapon)
 	{
-		OverlapingWeapon->Equip(GetMesh(),FName("RightHandSocket"));
+		OverlapingWeapon->Equip(GetMesh(),FName("RightHandSocket"), this, this);
 		CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
 		OverlapingItem = nullptr;
 		EquippedWeapon = OverlapingWeapon;
@@ -218,7 +212,7 @@ void ASlashCharacter::PlayAttackMontage()
 	}
 }
 
-void ASlashCharacter::PlayEquipMontage(FName SectionName)
+void ASlashCharacter::PlayEquipMontage(const FName& SectionName)
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	if (AnimInstance && EquipMontage)

@@ -5,16 +5,22 @@
 #include "Slash/DebugMacros.h"
 #include "Components/SphereComponent.h"
 #include "Characters/SlashCharacter.h"
+#include "NiagaraComponent.h"
 
 AItem::AItem()
 {
 	PrimaryActorTick.bCanEverTick = true;// 是否开启类的tick功能，true开启，false关闭，关闭可以提高性能
 
 	ItemMesh =  CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemMeshComponent"));
+	ItemMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	ItemMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	RootComponent = ItemMesh;
 
 	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
 	Sphere->SetupAttachment(GetRootComponent());
+
+	EmberEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Ember"));
+	EmberEffect->SetupAttachment(GetRootComponent());
 }
 
 void AItem::BeginPlay()
